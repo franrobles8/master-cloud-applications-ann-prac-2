@@ -18,7 +18,7 @@ public class Practica2AnnUsersApplication {
 
 	@Bean
     public Mapper mapper() {
-        return new DozerBeanMapper(Arrays.asList("dozer_mapping.xml"));
+        return new DozerBeanMapper();
     }
 
 	@Bean

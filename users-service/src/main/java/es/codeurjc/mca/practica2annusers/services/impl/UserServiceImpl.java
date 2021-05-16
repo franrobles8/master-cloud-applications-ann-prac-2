@@ -3,6 +3,7 @@ package es.codeurjc.mca.practica2annusers.services.impl;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.dozer.Mapper;
@@ -30,7 +31,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public Collection<UserResponseDto> findAll() {
-        return this.userRepository.findAll().stream()
+        List<User> users = this.userRepository.findAll();
+        return users.stream()
                 .map(user -> this.mapper.map(user, UserResponseDto.class))
                 .collect(Collectors.toList());
     }

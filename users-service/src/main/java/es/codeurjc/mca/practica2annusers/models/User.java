@@ -16,7 +16,7 @@ import lombok.Data;
 // import lombok.ToString;
 
 @Entity
-@Table(name = "users", schema="users")
+@Table(name = "users")
 @Data
 // @ToString(exclude = "comments")
 public class User {

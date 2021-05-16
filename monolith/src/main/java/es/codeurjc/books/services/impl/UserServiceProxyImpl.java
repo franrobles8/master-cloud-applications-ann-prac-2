@@ -29,7 +29,7 @@ public class UserServiceProxyImpl implements UserService {
     private RestTemplate userRepository;
     private CommentService commentService;
     
-    @Value("service.users.url")
+    @Value("${service.users.url}")
     private String usersServiceUrl;
 
     public UserServiceProxyImpl(Mapper mapper, RestTemplate userRepository, CommentService commentService) {
