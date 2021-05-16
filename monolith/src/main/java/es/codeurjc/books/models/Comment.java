@@ -30,7 +30,7 @@ public class Comment {
     
     @ManyToOne
     private Book book;
+
+    private Long user;
     
-    @ManyToOne
-    private User user;
 }

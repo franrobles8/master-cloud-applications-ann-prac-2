@@ -67,4 +67,8 @@ public class UserServiceImpl implements UserService {
         return this.mapper.map(user, UserResponseDto.class);
     }
 
+    public Boolean existsByNick(String nick) {
+        return this.userRepository.existsByNick(nick);
+    }
+
 }

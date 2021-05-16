@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.codeurjc.mca.practica2annusers.dtos.requests.UpdateUserEmailRequestDto;
 import es.codeurjc.mca.practica2annusers.dtos.requests.UserRequestDto;
-// import es.codeurjc.mca.practica2annusers.dtos.responses.UserCommentResponseDto;
+import es.codeurjc.mca.practica2annusers.dtos.responses.UserCommentResponseDto;
 import es.codeurjc.mca.practica2annusers.dtos.responses.UserResponseDto;
-// import es.codeurjc.mca.practica2annusers.services.CommentService;
+import es.codeurjc.mca.practica2annusers.services.CommentServiceProxy;
 import es.codeurjc.mca.practica2annusers.services.UserService;
 
 @RestController
@@ -25,15 +25,11 @@ import es.codeurjc.mca.practica2annusers.services.UserService;
 public class UserController {
 
     private UserService userService;
-//     private CommentService commentService;
+    private CommentServiceProxy commentService;
 
-//     public UserController(UserService userService, CommentService commentService) {
-//         this.userService = userService;
-//         this.commentService = commentService;
-//     }
-
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CommentServiceProxy commentService) {
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/")
@@ -44,6 +40,11 @@ public class UserController {
     @GetMapping("/{userId}")
     public UserResponseDto getUser(@PathVariable long userId) {
         return this.userService.findById(userId);
+    }
+
+    @GetMapping("/{nick}/check")
+    public Boolean userExists(@PathVariable String nick) {
+        return this.userService.existsByNick(nick);
     }
 
     @PostMapping("/")
@@ -62,9 +63,9 @@ public class UserController {
         return this.userService.delete(userId);
     }
 
-    // @GetMapping("/{userId}/comments")
-    // public Collection<UserCommentResponseDto> getUserComments(@PathVariable long userId) {
-    //     return this.commentService.getComments(userId);
-    // }
+    @GetMapping("/{userId}/comments")
+    public Collection<UserCommentResponseDto> getUserComments(@PathVariable long userId) {
+        return this.commentService.getComments(userId);
+    }
 
 }

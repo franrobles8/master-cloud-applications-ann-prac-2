@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.dozer.Mapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import es.codeurjc.books.dtos.requests.UpdateUserEmailRequestDto;
@@ -16,17 +17,21 @@ import es.codeurjc.books.exceptions.UserNotFoundException;
 import es.codeurjc.books.exceptions.UserWithSameNickException;
 import es.codeurjc.books.models.User;
 import es.codeurjc.books.repositories.UserRepository;
+import es.codeurjc.books.services.CommentService;
 import es.codeurjc.books.services.UserService;
 
 @Service
+@Profile("monolith")
 public class UserServiceImpl implements UserService {
 
     private Mapper mapper;
     private UserRepository userRepository;
+    private CommentService commentService;
 
-    public UserServiceImpl(Mapper mapper, UserRepository userRepository) {
+    public UserServiceImpl(Mapper mapper, UserRepository userRepository, CommentService commentService) {
         this.mapper = mapper;
         this.userRepository = userRepository;
+        this.commentService = commentService;
     }
 
     public Collection<UserResponseDto> findAll() {
@@ -60,7 +65,8 @@ public class UserServiceImpl implements UserService {
 
     public UserResponseDto delete(long userId) {
         User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        if (!isEmpty(user.getComments())) {
+
+        if (!isEmpty(this.commentService.getComments(userId))) {
             throw new UserCanNotBeDeletedException();
         }
         this.userRepository.delete(user);

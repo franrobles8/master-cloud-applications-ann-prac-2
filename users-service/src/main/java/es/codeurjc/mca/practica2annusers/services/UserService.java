@@ -18,4 +18,6 @@ public interface UserService {
 
     UserResponseDto delete(long userId);
 
+    Boolean existsByNick(String nick);
+
 }

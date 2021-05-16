@@ -41,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         User user = this.userRepository.findByNick(commentRequestDto.getUserNick()).orElseThrow(UserNotFoundException::new);
         Comment comment = this.mapper.map(commentRequestDto, Comment.class);
         comment.setBook(book);
-        comment.setUser(user);
+        comment.setUser(user.getId());
         comment = this.commentRepository.save(comment);
         return this.mapper.map(comment, CommentResponseDto.class);
     }
@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public Collection<UserCommentResponseDto> getComments(long userId) {
-        return this.commentRepository.findByUserId(userId).stream()
+        return this.commentRepository.findByUser(userId).stream()
                 .map(comment -> this.mapper.map(comment, UserCommentResponseDto.class))
                 .collect(Collectors.toList());
     }
