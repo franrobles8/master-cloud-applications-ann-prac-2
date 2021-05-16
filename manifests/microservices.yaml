@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+  labels:
+    app: microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: microservice
+  template:
+    metadata:
+      labels:
+        app: microservice
+    spec:
+      containers:
+      - name: microservice
+        image: franrobles8/microservice:0.0.1
+        ports:
+        - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  # Unique key of the Service instance
+  name: service-microservice
+  labels:
+    app: microservice
+spec:
+  ports:
+    # Accept traffic sent to port 8080
+    - name: http-microservice
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    # Loadbalance traffic across Pods matching
+    # this label selector
+    app: microservice
+  # Create an HA proxy in the cloud provider
+  # with an External IP address - *Only supported
+  # by some cloud providers*
+  type: ClusterIP
