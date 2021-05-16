@@ -1,44 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: microservice-deployment
+  name: users-service-deployment
   labels:
-    app: microservice
+    app: users-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: microservice
+      app: users-service
   template:
     metadata:
       labels:
-        app: microservice
+        app: users-service
     spec:
       containers:
-      - name: microservice
-        image: franrobles8/microservice:0.0.1
+      - name: users-service
+        image: franrobles8/users-service:0.0.1
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
+        env:
+        - name: SERVICE_MONOLITH_URL
+          value: "http://service-monolith:8080"
+        - name: DB_URL
+          value: "jdbc:mysql://db:3306/users"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: "pass"
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  # Unique key of the Service instance
-  name: service-microservice
+  name: service-users-service
   labels:
-    app: microservice
+    app: users-service
 spec:
   ports:
-    # Accept traffic sent to port 8080
-    - name: http-microservice
-      port: 8080
-      targetPort: 8080
+    - name: http-users-service
+      port: 8081
+      targetPort: 8081
       protocol: TCP
   selector:
-    # Loadbalance traffic across Pods matching
-    # this label selector
-    app: microservice
-  # Create an HA proxy in the cloud provider
-  # with an External IP address - *Only supported
-  # by some cloud providers*
+    app: users-service
   type: ClusterIP

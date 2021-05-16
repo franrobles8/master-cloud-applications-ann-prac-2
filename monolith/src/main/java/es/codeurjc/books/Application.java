@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.retry.policy.AlwaysRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 @SpringBootApplication
 public class Application {
@@ -18,7 +20,15 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        RetryTemplate template = new RetryTemplate();
+		AlwaysRetryPolicy policy = new AlwaysRetryPolicy();
+		
+		template.setRetryPolicy(policy);
+		template.execute(context ->
+			{
+				SpringApplication.run(Application.class, args);
+				return true;
+			});
     }
 
     @Bean

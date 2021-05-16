@@ -7,13 +7,23 @@ import org.dozer.Mapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.retry.policy.AlwaysRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class Practica2AnnUsersApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Practica2AnnUsersApplication.class, args);
+		RetryTemplate template = new RetryTemplate();
+		AlwaysRetryPolicy policy = new AlwaysRetryPolicy();
+		
+		template.setRetryPolicy(policy);
+		template.execute(context ->
+			{
+				SpringApplication.run(Practica2AnnUsersApplication.class, args);
+				return true;
+			});
 	}
 
 	@Bean

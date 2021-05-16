@@ -5,7 +5,7 @@ metadata:
   labels:
     app: monolith
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: monolith
@@ -16,9 +16,20 @@ spec:
     spec:
       containers:
       - name: monolith
-        image: franrobles8/monolith2:0.0.1
+        image: franrobles8/monolith:0.0.1
         ports:
         - containerPort: 8080
+        env:
+        - name: DEPLOY_TYPE
+          value: "microservice" # microservice | monolith
+        - name: SERVICE_USERS_URL
+          value: "http://service-users-service:8081/api/v1/users"
+        - name: DB_URL
+          value: "jdbc:mysql://db:3306/test"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: "pass"
 ---
 kind: Service
 apiVersion: v1
