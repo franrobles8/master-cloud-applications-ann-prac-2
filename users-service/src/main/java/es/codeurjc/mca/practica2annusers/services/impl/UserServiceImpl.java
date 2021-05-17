@@ -17,6 +17,7 @@ import es.codeurjc.mca.practica2annusers.exceptions.UserNotFoundException;
 import es.codeurjc.mca.practica2annusers.exceptions.UserWithSameNickException;
 import es.codeurjc.mca.practica2annusers.models.User;
 import es.codeurjc.mca.practica2annusers.repositories.UserRepository;
+import es.codeurjc.mca.practica2annusers.services.CommentServiceProxy;
 import es.codeurjc.mca.practica2annusers.services.UserService;
 
 @Service
@@ -24,10 +25,12 @@ public class UserServiceImpl implements UserService {
 
     private Mapper mapper;
     private UserRepository userRepository;
+    private CommentServiceProxy commentService;
 
-    public UserServiceImpl(Mapper mapper, UserRepository userRepository) {
+    public UserServiceImpl(Mapper mapper, UserRepository userRepository, CommentServiceProxy commentService) {
         this.mapper = mapper;
         this.userRepository = userRepository;
+        this.commentService = commentService;
     }
 
     public Collection<UserResponseDto> findAll() {
@@ -62,9 +65,9 @@ public class UserServiceImpl implements UserService {
 
     public UserResponseDto delete(long userId) {
         User user = this.userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        // if (!isEmpty(user.getComments())) {
-        //     throw new UserCanNotBeDeletedException();
-        // }
+        if (!isEmpty(commentService.getComments(userId))) {
+            throw new UserCanNotBeDeletedException();
+        }
         this.userRepository.delete(user);
         return this.mapper.map(user, UserResponseDto.class);
     }
