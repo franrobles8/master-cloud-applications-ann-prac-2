@@ -23,7 +23,7 @@ spec:
         - name: DEPLOY_TYPE
           value: "microservice" # microservice | monolith
         - name: SERVICE_USERS_URL
-          value: "http://service-users-service:8081/api/v1/users"
+          value: "http://service-users-service:8081"
         - name: DB_URL
           value: "jdbc:mysql://db:3306/test"
         - name: DB_USER

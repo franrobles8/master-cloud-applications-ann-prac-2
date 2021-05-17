@@ -32,6 +32,8 @@ public class UserServiceProxyImpl implements UserService {
     @Value("${service.users.url}")
     private String usersServiceUrl;
 
+    private static final String PATH = "/api/v1/users/";
+
     public UserServiceProxyImpl(Mapper mapper, RestTemplate userRepository, CommentService commentService) {
         this.mapper = mapper;
         this.userRepository = userRepository;
@@ -39,22 +41,22 @@ public class UserServiceProxyImpl implements UserService {
     }
 
     public Collection<UserResponseDto> findAll() {
-        return this.userRepository.getForEntity(usersServiceUrl + "/", Collection.class).getBody();
+        return this.userRepository.getForEntity(usersServiceUrl + PATH, Collection.class).getBody();
     }
 
     public UserResponseDto save(UserRequestDto userRequestDto) {
-        boolean userExists = this.userRepository.getForEntity(usersServiceUrl + "/" + userRequestDto.getNick() 
+        boolean userExists = this.userRepository.getForEntity(usersServiceUrl + PATH + userRequestDto.getNick() 
             + "/check", Boolean.class).getBody();
 
         if(userExists) {
           throw new UserWithSameNickException();
         }
 
-        return this.userRepository.postForEntity(usersServiceUrl + "/", userRequestDto, UserResponseDto.class).getBody();
+        return this.userRepository.postForEntity(usersServiceUrl + PATH, userRequestDto, UserResponseDto.class).getBody();
     }
 
     public UserResponseDto findById(long userId) {
-        ResponseEntity<UserResponseDto> user = this.userRepository.getForEntity(usersServiceUrl + "/" + userId, UserResponseDto.class);
+        ResponseEntity<UserResponseDto> user = this.userRepository.getForEntity(usersServiceUrl + PATH + userId, UserResponseDto.class);
 
         if(user.getStatusCode() == HttpStatus.NOT_FOUND) {
           throw new UserNotFoundException();
@@ -82,7 +84,7 @@ public class UserServiceProxyImpl implements UserService {
         }
 
         return this.userRepository
-          .exchange(usersServiceUrl + "/" + userId, HttpMethod.DELETE, null, UserResponseDto.class).getBody();
+          .exchange(usersServiceUrl + PATH + userId, HttpMethod.DELETE, null, UserResponseDto.class).getBody();
     }
 
 }

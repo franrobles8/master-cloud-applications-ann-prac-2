@@ -13,15 +13,17 @@ public class CommentServiceProxyImpl implements CommentServiceProxy {
 
     private RestTemplate commentRepository;
 
-    @Value("service.monolith.url")
+    @Value("${service.monolith.url}")
     private String monolithUrl;
+
+    private static final String PATH = "/api/v1/users/";
 
     public CommentServiceProxyImpl(RestTemplate commentRepository) {
         this.commentRepository = commentRepository;
     }
 
     public Collection<UserCommentResponseDto> getComments(long userId) {
-        return this.commentRepository.getForEntity(monolithUrl + "/" + userId + "/comments", Collection.class).getBody();
+        return this.commentRepository.getForEntity(monolithUrl + PATH + userId + "/comments", Collection.class).getBody();
     }
 
 }
