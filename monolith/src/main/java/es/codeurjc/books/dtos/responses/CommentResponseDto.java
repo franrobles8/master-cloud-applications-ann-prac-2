@@ -6,7 +6,7 @@ import lombok.Data;
 public class CommentResponseDto {
 
     private Long id;
-    private CommentUserResponseDto user;
+    private Long user;
     private String comment;
     private float score;
 
